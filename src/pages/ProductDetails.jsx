@@ -1,53 +1,52 @@
 
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-function ProductCard({ product }) {
+function ProductDetails() {
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://fakestoreapi.com/products/${id}`)
+      .then((response) => response.json())
+      .then((data) => setProduct(data));
+  }, [id]);
+
+  if (!product) {
+    return <h2>Loading...</h2>;
+  }
+
   return (
-    <Link
-      to={`/products/${product.id}`}
+    <div
       style={{
-        textDecoration: "none",
-        color: "black",
+        padding: "20px",
+        maxWidth: "900px",
+        margin: "0 auto",
       }}
     >
-      <div
+      <img
+        src={product.image}
+        alt={product.title}
         style={{
-          border: "1px solid #ddd",
-          borderRadius: "10px",
-          padding: "15px",
-          background: "white",
-          textAlign: "center",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-          height: "100%",
+          width: "250px",
+          height: "250px",
+          objectFit: "contain",
         }}
-      >
-        <img
-          src={product.image}
-          alt={product.title}
-          style={{
-            width: "150px",
-            height: "150px",
-            objectFit: "contain",
-          }}
-        />
+      />
 
-        <h3
-          style={{
-            marginTop: "10px",
-            fontSize: "16px",
-          }}
-        >
-          {product.title}
-        </h3>
+      <h1>{product.title}</h1>
 
-        <p style={{ marginTop: "10px" }}>
-          ₹{product.price}
-        </p>
+      <h2>${product.price}</h2>
 
-        <p>{product.category}</p>
-      </div>
-    </Link>
+      <p>
+        <strong>Category:</strong> {product.category}
+      </p>
+
+      <p>
+        <strong>Description:</strong> {product.description}
+      </p>
+    </div>
   );
 }
 
-export default ProductCard;
+export default ProductDetails;
